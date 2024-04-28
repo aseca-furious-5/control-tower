@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { Order, OrderInput } from '../model/order.model';
 import { ItemService } from '../../item/service/item.service';
+import { OrderRepository } from '../repository/order.repository';
 
 @Injectable()
 export class OrderService {
-  private nextId = 1;
-
-  constructor(private readonly itemService: ItemService) {}
+  constructor(
+    private readonly repository: OrderRepository,
+    private readonly itemService: ItemService,
+  ) {}
 
   createOrder(orderInput: OrderInput): Order {
     for (const orderItem of orderInput.items) {
@@ -15,8 +17,6 @@ export class OrderService {
       }
     }
 
-    const newOrder = { id: this.nextId, items: orderInput.items };
-    this.nextId++;
-    return newOrder;
+    return this.repository.createOrder(orderInput);
   }
 }

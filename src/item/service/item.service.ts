@@ -1,18 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { Item, ItemInput } from '../model/item.model';
+import { ItemRepository } from '../repository/item.repository';
 
 @Injectable()
 export class ItemService {
-  private items: Item[] = [];
-  private nextId = 1;
+  constructor(private readonly repository: ItemRepository) {}
+
   createItem(newItemInput: ItemInput): Item {
-    const newItem = { id: this.nextId, ...newItemInput };
-    this.nextId++;
-    this.items.push(newItem);
-    return newItem;
+    return this.repository.createItem(newItemInput);
   }
 
   itemExists(id: number): boolean {
-    return this.items.some((item) => item.id === id);
+    return this.repository.itemExists(id);
   }
 }

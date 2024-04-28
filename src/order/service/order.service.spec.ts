@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { OrderService } from './order.service';
 import { ItemModule } from '../../item/item.module';
 import { ItemService } from '../../item/service/item.service';
+import { orderRepositoryMockProvider } from '../repository/order.repository.mock';
 
 describe('OrderService', () => {
   let service: OrderService;
@@ -10,7 +11,7 @@ describe('OrderService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [ItemModule],
-      providers: [OrderService],
+      providers: [OrderService, orderRepositoryMockProvider],
     }).compile();
 
     service = module.get<OrderService>(OrderService);

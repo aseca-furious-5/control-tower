@@ -1,12 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ItemService } from './item.service';
+import { itemRepositoryMockProvider } from '../repository/item.repository.mock';
 
 describe('ItemService', () => {
   let service: ItemService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ItemService],
+      providers: [ItemService, itemRepositoryMockProvider],
     }).compile();
 
     service = module.get<ItemService>(ItemService);
