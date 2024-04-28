@@ -4,15 +4,15 @@ import { OrderRepository } from './order.repository';
 class OrderRepositoryMock implements OrderRepository {
   private orders: Order[] = [];
   private nextId = 1;
-  createOrder(newOrder: OrderInput): Order {
+  createOrder(newOrder: OrderInput): Promise<Order> {
     const newOrderWithId = { ...newOrder, id: this.nextId };
     this.orders.push(newOrderWithId);
     this.nextId++;
-    return newOrderWithId;
+    return Promise.resolve(newOrderWithId);
   }
 
-  orderExists(id: number): boolean {
-    return this.orders.some((order) => order.id === id);
+  orderExists(id: number): Promise<boolean> {
+    return Promise.resolve(!!this.orders.find((order) => order.id === id));
   }
 }
 

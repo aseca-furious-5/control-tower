@@ -10,9 +10,9 @@ export class OrderService {
     private readonly itemService: ItemService,
   ) {}
 
-  createOrder(orderInput: OrderInput): Order {
+  async createOrder(orderInput: OrderInput): Promise<Order> {
     for (const orderItem of orderInput.items) {
-      if (!this.itemService.itemExists(orderItem.id)) {
+      if (!(await this.itemService.itemExists(orderItem.id))) {
         throw new Error(`Item with id ${orderItem.id} does not exist`);
       }
     }

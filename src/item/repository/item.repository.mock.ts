@@ -6,15 +6,15 @@ import { Injectable } from '@nestjs/common';
 class ItemRepositoryMock implements ItemRepository {
   private items: Item[] = [];
   private nextId = 1;
-  createItem(newItem: ItemInput): Item {
+  createItem(newItem: ItemInput): Promise<Item> {
     const newItemWithId = { ...newItem, id: this.nextId };
     this.items.push(newItemWithId);
     this.nextId++;
-    return newItemWithId;
+    return Promise.resolve(newItemWithId);
   }
 
-  itemExists(id: number): boolean {
-    return this.items.some((item) => item.id === id);
+  itemExists(id: number): Promise<boolean> {
+    return Promise.resolve(this.items.some((item) => item.id === id));
   }
 }
 

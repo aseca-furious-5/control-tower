@@ -6,11 +6,11 @@ import { ItemRepository } from '../repository/item.repository';
 export class ItemService {
   constructor(private readonly repository: ItemRepository) {}
 
-  createItem(newItemInput: ItemInput): Item {
+  createItem(newItemInput: ItemInput): Promise<Item> {
     return this.repository.createItem(newItemInput);
   }
 
-  itemExists(id: number): boolean {
+  itemExists(id: number): Promise<boolean> {
     return this.repository.itemExists(id);
   }
 }

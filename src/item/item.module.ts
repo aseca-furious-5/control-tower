@@ -1,9 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ItemService } from './service/item.service';
-import { itemRepositoryMockProvider } from './repository/item.repository.mock';
+import { PrismaModule } from '../prisma/prisma.module';
+import { itemRepositoryDbProvider } from './repository/item.repository.db';
+import { ItemController } from './controller/item.controller';
 
 @Module({
-  providers: [ItemService, itemRepositoryMockProvider],
+  imports: [PrismaModule],
+  providers: [ItemService, itemRepositoryDbProvider],
   exports: [ItemService],
+  controllers: [ItemController],
 })
 export class ItemModule {}

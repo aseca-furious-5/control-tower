@@ -1,6 +1,6 @@
 export interface Order {
   id: number;
-  items: Record<string, any>[];
+  items: OrderItem[];
 }
 export interface OrderInput {
   items: OrderItem[];
