@@ -14,21 +14,22 @@ datasource db {
 }
 
 model Order {
-  id        Int   @id @default(autoincrement())
-  items     OrderItem[]
+  id     Int         @id @default(autoincrement())
+  items  OrderItem[]
+  status String      @default("NEW")
 }
 
 model OrderItem {
-  id        Int     @id @default(autoincrement())
-  orderId   Int
-  order     Order   @relation(fields: [orderId], references: [id])
-  itemId    Int
-  item      Item    @relation(fields: [itemId], references: [id])
-  quantity  Int
+  id       Int   @id @default(autoincrement())
+  orderId  Int
+  order    Order @relation(fields: [orderId], references: [id])
+  itemId   Int
+  item     Item  @relation(fields: [itemId], references: [id])
+  quantity Int
 }
 
 model Item {
-  id        Int    @id @default(autoincrement())
+  id        Int         @id @default(autoincrement())
   name      String
   price     Int
   orderItem OrderItem[]

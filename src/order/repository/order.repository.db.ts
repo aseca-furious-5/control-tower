@@ -27,6 +27,7 @@ export class OrderRepositoryDb implements OrderRepository {
         id: item.id,
         quantity: item.quantity,
       })),
+      status: order.status,
     };
   }
 
@@ -36,6 +37,43 @@ export class OrderRepositoryDb implements OrderRepository {
     });
 
     return !!result;
+  }
+
+  async updateOrderStatus(id: number, status: string): Promise<Order> {
+    const order = await this.db.order.update({
+      where: { id },
+      data: { status },
+      include: {
+        items: true,
+      },
+    });
+
+    return {
+      id: order.id,
+      items: order.items.map((item) => ({
+        id: item.id,
+        quantity: item.quantity,
+      })),
+      status: order.status,
+    };
+  }
+
+  async getOrderById(id: number): Promise<Order> {
+    const order = await this.db.order.findUnique({
+      where: { id },
+      include: {
+        items: true,
+      },
+    });
+
+    return {
+      id: order.id,
+      items: order.items.map((item) => ({
+        id: item.id,
+        quantity: item.quantity,
+      })),
+      status: order.status,
+    };
   }
 }
 
