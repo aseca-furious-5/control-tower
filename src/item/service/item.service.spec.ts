@@ -60,4 +60,20 @@ describe('ItemService', () => {
 
     expect(itemExists).toBe(true);
   });
+
+  it('005 _ should return all existing items', async () => {
+    const newItem1 = await service.createItem({
+      name: 'MyItem',
+      price: 100,
+    });
+
+    const newItem2 = await service.createItem({
+      name: 'MyItem',
+      price: 100,
+    });
+
+    const itemExists = await service.allItems();
+
+    expect(itemExists).toEqual([newItem1, newItem2]);
+  });
 });

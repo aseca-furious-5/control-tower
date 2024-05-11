@@ -22,6 +22,10 @@ class ItemRepositoryDb implements ItemRepository {
 
     return !!result;
   }
+
+  async all(): Promise<Item[]> {
+    return this.db.item.findMany();
+  }
 }
 
 export const itemRepositoryDbProvider = {

@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ItemService } from '../service/item.service';
 import { Item, ItemInput } from '../model/item.model';
 
@@ -9,5 +9,10 @@ export class ItemController {
   @Post()
   createItem(@Body() newItemInput: ItemInput): Promise<Item> {
     return this.service.createItem(newItemInput);
+  }
+
+  @Get('all')
+  allItems(): Promise<Item[]> {
+    return this.service.allItems();
   }
 }
