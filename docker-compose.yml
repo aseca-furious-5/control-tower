@@ -1,5 +1,5 @@
 services:
-  db:
+  tower-db:
     image: postgres:alpine
     container_name: tower-db
     restart: always
@@ -14,3 +14,27 @@ services:
       interval: 1s
       timeout: 1s
       retries: 15
+    volumes:
+      - tower-db-data:/var/lib/postgresql/data
+
+  tower:
+    container_name: tower
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    restart: always
+    depends_on:
+      - tower-db
+    links:
+      - tower-db
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env.docker
+    volumes:
+      - ./src:/app/src
+      - ./prisma:/app/prisma
+
+volumes:
+  tower-db-data:
