@@ -13,4 +13,8 @@ export class ItemService {
   itemExists(id: number): Promise<boolean> {
     return this.repository.itemExists(id);
   }
+
+  async allItems() {
+    return this.repository.all();
+  }
 }
