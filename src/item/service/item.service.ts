@@ -1,13 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { Item, ItemInput } from '../model/item.model';
 import { ItemRepository } from '../repository/item.repository';
+import { InventoryService } from '../../inventory/service/inventory.service';
 
 @Injectable()
 export class ItemService {
-  constructor(private readonly repository: ItemRepository) {}
+  constructor(
+    private readonly repository: ItemRepository,
+    private readonly inventoryService: InventoryService,
+  ) {}
 
-  createItem(newItemInput: ItemInput): Promise<Item> {
-    return this.repository.createItem(newItemInput);
+  async createItem(newItemInput: ItemInput): Promise<Item> {
+    const createdItem = await this.repository.createItem(newItemInput);
+    await this.inventoryService.createInventoryForItem(createdItem);
+    return createdItem;
   }
 
   itemExists(id: number): Promise<boolean> {

@@ -4,6 +4,7 @@ import { ItemService } from '../../item/service/item.service';
 import { orderRepositoryMockProvider } from '../repository/order.repository.mock';
 import { itemRepositoryMockProvider } from '../../item/repository/item.repository.mock';
 import { NotFoundException } from '@nestjs/common';
+import { inventoryServiceMockProvider } from '../../inventory/service/inventory.service.mock';
 
 describe('OrderService', () => {
   let service: OrderService;
@@ -16,6 +17,7 @@ describe('OrderService', () => {
         orderRepositoryMockProvider,
         ItemService,
         itemRepositoryMockProvider,
+        inventoryServiceMockProvider,
       ],
     }).compile();
 
