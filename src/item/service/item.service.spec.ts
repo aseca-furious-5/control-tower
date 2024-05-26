@@ -1,16 +1,27 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ItemService } from './item.service';
 import { itemRepositoryMockProvider } from '../repository/item.repository.mock';
+import {
+  InventoryServiceMock,
+  inventoryServiceMockProvider,
+} from '../../inventory/service/inventory.service.mock';
+import { InventoryService } from '../../inventory/service/inventory.service';
 
 describe('ItemService', () => {
   let service: ItemService;
+  let inventoryServiceMock: InventoryServiceMock;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ItemService, itemRepositoryMockProvider],
+      providers: [
+        ItemService,
+        itemRepositoryMockProvider,
+        inventoryServiceMockProvider,
+      ],
     }).compile();
 
     service = module.get<ItemService>(ItemService);
+    inventoryServiceMock = module.get<InventoryServiceMock>(InventoryService);
   });
 
   it('should be defined', () => {
@@ -75,5 +86,14 @@ describe('ItemService', () => {
     const itemExists = await service.allItems();
 
     expect(itemExists).toEqual([newItem1, newItem2]);
+  });
+
+  it('006 _ should create an inventory for an item when creating it', async () => {
+    const newItem1 = await service.createItem({
+      name: 'MyItem',
+      price: 100,
+    });
+
+    expect(inventoryServiceMock.savedItems).toEqual([newItem1]);
   });
 });

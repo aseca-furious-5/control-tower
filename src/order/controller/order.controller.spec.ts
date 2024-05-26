@@ -4,6 +4,7 @@ import { OrderService } from '../service/order.service';
 import { orderRepositoryMockProvider } from '../repository/order.repository.mock';
 import { ItemService } from '../../item/service/item.service';
 import { itemRepositoryMockProvider } from '../../item/repository/item.repository.mock';
+import { inventoryServiceMockProvider } from '../../inventory/service/inventory.service.mock';
 import { warehouseServiceMockProvider } from '../../warehouse/service/warehouse.service.mock';
 
 describe('OrderController', () => {
@@ -17,6 +18,7 @@ describe('OrderController', () => {
         ItemService,
         orderRepositoryMockProvider,
         itemRepositoryMockProvider,
+        inventoryServiceMockProvider,
         warehouseServiceMockProvider
       ],
     }).compile();
