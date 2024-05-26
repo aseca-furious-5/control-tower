@@ -26,10 +26,8 @@ class DeliveryServiceHttp extends DeliveryService {
     }));
 
     await this.httpService.axiosRef.post(
-      `${this.deliveryServiceUrl}/deliveries/${order.id}`,
-      {
-        items: requestItems,
-      },
+      `${this.deliveryServiceUrl}/delivery/${order.id}`,
+      requestItems,
     );
   }
 }
