@@ -2,12 +2,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Order, OrderInput } from '../model/order.model';
 import { ItemService } from '../../item/service/item.service';
 import { OrderRepository } from '../repository/order.repository';
+import { WarehouseService } from '../../warehouse/service/warehouse.service';
 
 @Injectable()
 export class OrderService {
   constructor(
     private readonly repository: OrderRepository,
     private readonly itemService: ItemService,
+    private readonly warehouseService: WarehouseService,
   ) {}
 
   async createOrder(orderInput: OrderInput): Promise<Order> {
@@ -19,7 +21,9 @@ export class OrderService {
       }
     }
 
-    return this.repository.createOrder(orderInput);
+    const newOrder = await this.repository.createOrder(orderInput);
+    await this.warehouseService.createPreparationForOrder(newOrder);
+    return newOrder;
   }
 
   async updateOrderStatus(id: number, status: string): Promise<Order> {

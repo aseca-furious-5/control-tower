@@ -5,10 +5,14 @@ import { orderRepositoryMockProvider } from '../repository/order.repository.mock
 import { itemRepositoryMockProvider } from '../../item/repository/item.repository.mock';
 import { NotFoundException } from '@nestjs/common';
 import { inventoryServiceMockProvider } from '../../inventory/service/inventory.service.mock';
+import { WarehouseServiceMock, warehouseServiceMockProvider } from '../../warehouse/service/warehouse.service.mock';
+import { WarehouseService } from '../../warehouse/service/warehouse.service';
+
 
 describe('OrderService', () => {
   let service: OrderService;
   let itemService: ItemService;
+  let warehouseServiceMock: WarehouseServiceMock;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -18,11 +22,13 @@ describe('OrderService', () => {
         ItemService,
         itemRepositoryMockProvider,
         inventoryServiceMockProvider,
+        warehouseServiceMockProvider
       ],
     }).compile();
 
     service = module.get<OrderService>(OrderService);
     itemService = module.get<ItemService>(ItemService);
+    warehouseServiceMock = module.get<WarehouseServiceMock>(WarehouseService);
   });
 
   it('should be defined', () => {
@@ -112,5 +118,18 @@ describe('OrderService', () => {
 
   it('009 _ should throw an error when getting an order that does not exist', async () => {
     await expect(service.getOrderById(1)).rejects.toThrow(NotFoundException);
+  });
+
+  it('010 _ should create a warehouse preparation when creating an order', async () => {
+    const newItem = await itemService.createItem({
+      name: 'Item 1',
+      price: 100,
+    });
+
+    const newOrder = await service.createOrder({
+      items: [{ id: newItem.id, quantity: 2 }],
+    });
+
+    expect(warehouseServiceMock.preparedOrders).toEqual([newOrder]);
   });
 });
