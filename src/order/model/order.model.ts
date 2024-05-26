@@ -8,16 +8,22 @@ export interface Order {
 
 export class OrderInput {
   @IsNotEmpty()
-  items: OrderItem[];
+  items: OrderItemInput[];
 }
 
-export class OrderItem {
+export class OrderItemInput {
   @IsNotEmpty()
   @IsNumber()
   id: number;
 
   @IsNotEmpty()
   @IsNumber()
+  quantity: number;
+}
+
+export class OrderItem {
+  id: number;
+  name: string;
   quantity: number;
 }
 

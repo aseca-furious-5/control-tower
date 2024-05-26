@@ -17,7 +17,11 @@ export class OrderRepositoryDb implements OrderRepository {
         },
       },
       include: {
-        items: true,
+        items: {
+          include: {
+            item: true,
+          },
+        },
       },
     });
 
@@ -26,6 +30,7 @@ export class OrderRepositoryDb implements OrderRepository {
       items: order.items.map((item) => ({
         id: item.id,
         quantity: item.quantity,
+        name: item.item.name,
       })),
       status: order.status,
     };
@@ -44,7 +49,11 @@ export class OrderRepositoryDb implements OrderRepository {
       where: { id },
       data: { status },
       include: {
-        items: true,
+        items: {
+          include: {
+            item: true,
+          },
+        },
       },
     });
 
@@ -53,6 +62,7 @@ export class OrderRepositoryDb implements OrderRepository {
       items: order.items.map((item) => ({
         id: item.id,
         quantity: item.quantity,
+        name: item.item.name,
       })),
       status: order.status,
     };
@@ -62,7 +72,11 @@ export class OrderRepositoryDb implements OrderRepository {
     const order = await this.db.order.findUnique({
       where: { id },
       include: {
-        items: true,
+        items: {
+          include: {
+            item: true,
+          },
+        },
       },
     });
 
@@ -71,6 +85,7 @@ export class OrderRepositoryDb implements OrderRepository {
       items: order.items.map((item) => ({
         id: item.id,
         quantity: item.quantity,
+        name: item.item.name,
       })),
       status: order.status,
     };
