@@ -5,14 +5,22 @@ import { orderRepositoryMockProvider } from '../repository/order.repository.mock
 import { itemRepositoryMockProvider } from '../../item/repository/item.repository.mock';
 import { NotFoundException } from '@nestjs/common';
 import { inventoryServiceMockProvider } from '../../inventory/service/inventory.service.mock';
-import { WarehouseServiceMock, warehouseServiceMockProvider } from '../../warehouse/service/warehouse.service.mock';
+import {
+  WarehouseServiceMock,
+  warehouseServiceMockProvider,
+} from '../../warehouse/service/warehouse.service.mock';
 import { WarehouseService } from '../../warehouse/service/warehouse.service';
-
+import {
+  DeliveryServiceMock,
+  deliveryServiceMockProvider,
+} from '../../delivery/service/delivery.service.mock';
+import { DeliveryService } from '../../delivery/service/delivery.service';
 
 describe('OrderService', () => {
   let service: OrderService;
   let itemService: ItemService;
   let warehouseServiceMock: WarehouseServiceMock;
+  let deliveryServiceMock: DeliveryServiceMock;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -22,13 +30,15 @@ describe('OrderService', () => {
         ItemService,
         itemRepositoryMockProvider,
         inventoryServiceMockProvider,
-        warehouseServiceMockProvider
+        warehouseServiceMockProvider,
+        deliveryServiceMockProvider,
       ],
     }).compile();
 
     service = module.get<OrderService>(OrderService);
     itemService = module.get<ItemService>(ItemService);
     warehouseServiceMock = module.get<WarehouseServiceMock>(WarehouseService);
+    deliveryServiceMock = module.get<DeliveryServiceMock>(DeliveryService);
   });
 
   it('should be defined', () => {
@@ -58,7 +68,7 @@ describe('OrderService', () => {
 
     expect(newOrder).toEqual({
       id: expect.any(Number),
-      items: [{ id: 1, quantity: 1 }],
+      items: [{ id: 1, quantity: 1, name: 'item' }],
       status: 'new',
     });
   });
@@ -131,5 +141,19 @@ describe('OrderService', () => {
     });
 
     expect(warehouseServiceMock.preparedOrders).toEqual([newOrder]);
+  });
+
+  it('011 _ should dispatch an order', async () => {
+    const newItem = await itemService.createItem({
+      name: 'Item 1',
+      price: 100,
+    });
+    const newOrder = await service.createOrder({
+      items: [{ id: newItem.id, quantity: 2 }],
+    });
+
+    await service.dispatchOrder(newOrder.id);
+
+    expect(deliveryServiceMock.deliveries).toEqual([newOrder]);
   });
 });

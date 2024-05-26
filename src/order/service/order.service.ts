@@ -3,6 +3,7 @@ import { Order, OrderInput } from '../model/order.model';
 import { ItemService } from '../../item/service/item.service';
 import { OrderRepository } from '../repository/order.repository';
 import { WarehouseService } from '../../warehouse/service/warehouse.service';
+import { DeliveryService } from '../../delivery/service/delivery.service';
 
 @Injectable()
 export class OrderService {
@@ -10,6 +11,7 @@ export class OrderService {
     private readonly repository: OrderRepository,
     private readonly itemService: ItemService,
     private readonly warehouseService: WarehouseService,
+    private readonly deliveryService: DeliveryService,
   ) {}
 
   async createOrder(orderInput: OrderInput): Promise<Order> {
@@ -39,5 +41,14 @@ export class OrderService {
       throw new NotFoundException(`Order with id ${id} does not exist`);
     }
     return this.repository.getOrderById(id);
+  }
+
+  async dispatchOrder(id: number): Promise<void> {
+    if (!(await this.repository.orderExists(id))) {
+      throw new NotFoundException(`Order with id ${id} does not exist`);
+    }
+
+    const order = await this.repository.getOrderById(id);
+    await this.deliveryService.createDeliveryForOrder(order);
   }
 }

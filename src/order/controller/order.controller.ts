@@ -33,4 +33,11 @@ export class OrderController {
   ): Promise<Order> {
     return this.service.getOrderById(orderId);
   }
+
+  @Post('/:orderId/dispatch')
+  async dispatchOrder(
+    @Param('orderId', ParseIntPipe) orderId: number,
+  ): Promise<void> {
+    await this.service.dispatchOrder(orderId);
+  }
 }

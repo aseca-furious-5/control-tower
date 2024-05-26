@@ -6,6 +6,8 @@ import { ItemService } from '../../item/service/item.service';
 import { itemRepositoryMockProvider } from '../../item/repository/item.repository.mock';
 import { inventoryServiceMockProvider } from '../../inventory/service/inventory.service.mock';
 import { warehouseServiceMockProvider } from '../../warehouse/service/warehouse.service.mock';
+import { deliveryServiceHttpProvider } from '../../delivery/service/delivery.service.http';
+import { deliveryServiceMockProvider } from '../../delivery/service/delivery.service.mock';
 
 describe('OrderController', () => {
   let controller: OrderController;
@@ -19,7 +21,8 @@ describe('OrderController', () => {
         orderRepositoryMockProvider,
         itemRepositoryMockProvider,
         inventoryServiceMockProvider,
-        warehouseServiceMockProvider
+        warehouseServiceMockProvider,
+        deliveryServiceMockProvider,
       ],
     }).compile();
 

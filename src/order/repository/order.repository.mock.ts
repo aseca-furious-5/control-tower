@@ -6,7 +6,13 @@ class OrderRepositoryMock implements OrderRepository {
   private nextId = 1;
 
   createOrder(newOrder: OrderInput): Promise<Order> {
-    const newOrderWithId = { ...newOrder, id: this.nextId, status: 'new' };
+    const newOrderWithId = {
+      items: newOrder.items.map(() => {
+        return { id: 1, quantity: 1, name: 'item' };
+      }),
+      id: this.nextId,
+      status: 'new',
+    };
     this.orders.push(newOrderWithId);
     this.nextId++;
     return Promise.resolve(newOrderWithId);
