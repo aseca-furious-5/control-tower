@@ -29,7 +29,7 @@ services:
     links:
       - tower-db
     ports:
-      - '3000:3000'
+      - '3100:3100'
     env_file:
       - .env.docker
     volumes:
