@@ -17,7 +17,16 @@ export class WarehouseServiceHttp extends WarehouseService {
   }
 
   async createPreparationForOrder(newOrder: Order) {
-    await this.httpService.axiosRef.post(`${this.warehouseUrl}/preparation/${newOrder.id}`);
+    const requestItems = newOrder.items.map((item) => ({
+      itemId: item.id,
+      quantity: item.quantity,
+      name: item.name,
+    }));
+
+    await this.httpService.axiosRef.post(
+      `${this.warehouseUrl}/preparation/${newOrder.id}`,
+      requestItems,
+    );
   }
 }
 
