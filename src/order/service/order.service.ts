@@ -12,7 +12,8 @@ export class OrderService {
     private readonly itemService: ItemService,
     private readonly warehouseService: WarehouseService,
     private readonly deliveryService: DeliveryService,
-  ) {}
+  ) {
+  }
 
   async createOrder(orderInput: OrderInput): Promise<Order> {
     for (const orderItem of orderInput.items) {
@@ -50,5 +51,9 @@ export class OrderService {
 
     const order = await this.repository.getOrderById(id);
     await this.deliveryService.createDeliveryForOrder(order);
+  }
+
+  async getAllOrders() {
+    return this.repository.getAllOrders();
   }
 }

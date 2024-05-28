@@ -4,7 +4,8 @@ import { Order, OrderInput } from '../model/order.model';
 import { Inject } from '@nestjs/common';
 
 export class OrderRepositoryDb implements OrderRepository {
-  constructor(@Inject(PrismaService) private readonly db: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly db: PrismaService) {
+  }
 
   async createOrder(orderInput: OrderInput): Promise<Order> {
     const order = await this.db.order.create({
@@ -42,6 +43,29 @@ export class OrderRepositoryDb implements OrderRepository {
     });
 
     return !!result;
+  }
+
+  async getAllOrders(): Promise<Order[]> {
+    const orders = await this.db.order.findMany({
+      include: {
+        items: {
+          include: {
+            item: true,
+          },
+        },
+      },
+    });
+
+    return orders.map((order) => ({
+      id: order.id,
+      items: order.items.map((item) => ({
+        id: item.id,
+        quantity: item.quantity,
+        name: item.item.name,
+        price: item.item.price,
+      })),
+      status: order.status,
+    }));
   }
 
   async updateOrderStatus(id: number, status: string): Promise<Order> {

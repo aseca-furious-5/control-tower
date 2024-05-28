@@ -1,18 +1,11 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  ParseIntPipe,
-  Post,
-  Put,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
 import { Order, OrderInput, OrderUpdateInput } from '../model/order.model';
 import { OrderService } from '../service/order.service';
 
 @Controller('order')
 export class OrderController {
-  constructor(private readonly service: OrderService) {}
+  constructor(private readonly service: OrderService) {
+  }
 
   @Post()
   createOrder(@Body() orderInput: OrderInput): Promise<Order> {
@@ -27,12 +20,18 @@ export class OrderController {
     return this.service.updateOrderStatus(orderId, updateInput.status);
   }
 
+  @Get('/all')
+  getAllOrders(): Promise<Order[]> {
+    return this.service.getAllOrders();
+  }
+
   @Get('/:orderId')
   getOrderById(
     @Param('orderId', ParseIntPipe) orderId: number,
   ): Promise<Order> {
     return this.service.getOrderById(orderId);
   }
+
 
   @Post('/:orderId/dispatch')
   async dispatchOrder(

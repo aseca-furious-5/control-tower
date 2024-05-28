@@ -8,4 +8,6 @@ export abstract class OrderRepository {
   abstract updateOrderStatus(id: number, status: string): Promise<Order>;
 
   abstract getOrderById(id: number): Promise<Order>;
+
+  abstract getAllOrders(): Promise<Order[]>;
 }
