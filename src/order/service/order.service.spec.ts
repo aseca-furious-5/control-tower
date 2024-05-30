@@ -156,4 +156,25 @@ describe('OrderService', () => {
 
     expect(deliveryServiceMock.deliveries).toEqual([newOrder]);
   });
+
+  it('012 _ should get all orders', async () => {
+    const newItem = await itemService.createItem({
+      name: 'Item 1',
+      price: 100,
+    });
+    const newOrder = await service.createOrder({
+      items: [{ id: newItem.id, quantity: 2 }],
+    });
+
+    const newOrder2 = await service.createOrder({
+      items: [{ id: newItem.id, quantity: 1 }],
+    });
+
+    await service.dispatchOrder(newOrder.id);
+    await service.dispatchOrder(newOrder2.id);
+
+    const orders = await service.getAllOrders();
+
+    expect(orders).toEqual([newOrder, newOrder2]);
+  });
 });

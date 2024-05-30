@@ -34,6 +34,10 @@ class OrderRepositoryMock implements OrderRepository {
   getOrderById(id: number): Promise<Order> {
     return Promise.resolve(this.orders.find((order) => order.id === id));
   }
+
+  getAllOrders(): Promise<Order[]> {
+    return Promise.resolve(this.orders);
+  }
 }
 
 export const orderRepositoryMockProvider = {
