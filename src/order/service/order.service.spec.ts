@@ -169,7 +169,7 @@ describe('OrderService', () => {
       price: 100,
     });
     const newOrder = await service.createOrder({
-      items: [{ id: newItem.id, quantity: 2 }],
+      items: [{ id: newItem.id, quantity: 1 }],
     });
 
     const newOrder2 = await service.createOrder({

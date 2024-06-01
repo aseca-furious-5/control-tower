@@ -94,6 +94,8 @@ describe('ItemService', () => {
       price: 100,
     });
 
-    expect(inventoryServiceMock.savedItems).toEqual([newItem1]);
+    expect(inventoryServiceMock.savedItems).toEqual([
+      { itemId: newItem1.id, quantity: 3 },
+    ]);
   });
 });
