@@ -22,6 +22,21 @@ export class InventoryServiceHttp extends InventoryService {
       itemId: newItem.id,
     });
   }
+
+  async hasStock(itemId: number, quantity: number): Promise<boolean> {
+    const response = await this.httpService.axiosRef.get(
+      `${this.inventoryUrl}/item/has-enough-stock/${itemId}?quantity=${quantity}`,
+    );
+
+    return response.data;
+  }
+
+  async updateItemQuantity(itemId: number, quantity: number): Promise<void> {
+    await this.httpService.axiosRef.put(`${this.inventoryUrl}/item/update`, {
+      itemId,
+      amount: quantity,
+    });
+  }
 }
 
 export const inventoryServiceHttpProvider = {

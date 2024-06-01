@@ -23,4 +23,12 @@ export class ItemService {
   async allItems() {
     return this.repository.all();
   }
+
+  async hasStock(itemId: number, quantity: number) {
+    return this.inventoryService.hasStock(itemId, quantity);
+  }
+
+  async updateItemQuantity(itemId: number, quantity: number) {
+    return this.inventoryService.updateItemQuantity(itemId, quantity);
+  }
 }

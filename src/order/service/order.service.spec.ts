@@ -3,8 +3,11 @@ import { OrderService } from './order.service';
 import { ItemService } from '../../item/service/item.service';
 import { orderRepositoryMockProvider } from '../repository/order.repository.mock';
 import { itemRepositoryMockProvider } from '../../item/repository/item.repository.mock';
-import { NotFoundException } from '@nestjs/common';
-import { inventoryServiceMockProvider } from '../../inventory/service/inventory.service.mock';
+import { ConflictException, NotFoundException } from '@nestjs/common';
+import {
+  InventoryServiceMock,
+  inventoryServiceMockProvider,
+} from '../../inventory/service/inventory.service.mock';
 import {
   WarehouseServiceMock,
   warehouseServiceMockProvider,
@@ -15,12 +18,14 @@ import {
   deliveryServiceMockProvider,
 } from '../../delivery/service/delivery.service.mock';
 import { DeliveryService } from '../../delivery/service/delivery.service';
+import { InventoryService } from '../../inventory/service/inventory.service';
 
 describe('OrderService', () => {
   let service: OrderService;
   let itemService: ItemService;
   let warehouseServiceMock: WarehouseServiceMock;
   let deliveryServiceMock: DeliveryServiceMock;
+  let inventoryServiceMock: InventoryServiceMock;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -39,6 +44,7 @@ describe('OrderService', () => {
     itemService = module.get<ItemService>(ItemService);
     warehouseServiceMock = module.get<WarehouseServiceMock>(WarehouseService);
     deliveryServiceMock = module.get<DeliveryServiceMock>(DeliveryService);
+    inventoryServiceMock = module.get<InventoryServiceMock>(InventoryService);
   });
 
   it('should be defined', () => {
@@ -176,5 +182,37 @@ describe('OrderService', () => {
     const orders = await service.getAllOrders();
 
     expect(orders).toEqual([newOrder, newOrder2]);
+  });
+
+  it('013 _ should throw if stock is not enough when creating order', async () => {
+    const newItem = await itemService.createItem({
+      name: 'Item 1',
+      price: 100,
+    });
+
+    const newOrder = {
+      items: [{ id: newItem.id, quantity: 100 }],
+    };
+
+    await expect(service.createOrder(newOrder)).rejects.toThrow(
+      ConflictException,
+    );
+  });
+
+  it("014 _ should update item's stock when creating an order", async () => {
+    const newItem = await itemService.createItem({
+      name: 'Item 1',
+      price: 100,
+    });
+
+    const newOrder = {
+      items: [{ id: newItem.id, quantity: 1 }],
+    };
+
+    await service.createOrder(newOrder);
+
+    expect(inventoryServiceMock.savedItems).toEqual([
+      { itemId: newItem.id, quantity: 2 },
+    ]);
   });
 });

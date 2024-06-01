@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Order, OrderInput } from '../model/order.model';
 import { ItemService } from '../../item/service/item.service';
 import { OrderRepository } from '../repository/order.repository';
@@ -12,8 +16,7 @@ export class OrderService {
     private readonly itemService: ItemService,
     private readonly warehouseService: WarehouseService,
     private readonly deliveryService: DeliveryService,
-  ) {
-  }
+  ) {}
 
   async createOrder(orderInput: OrderInput): Promise<Order> {
     for (const orderItem of orderInput.items) {
@@ -22,10 +25,25 @@ export class OrderService {
           `Item with id ${orderItem.id} does not exist`,
         );
       }
+      const hasStock = await this.itemService.hasStock(
+        orderItem.id,
+        orderItem.quantity,
+      );
+      if (!hasStock) {
+        throw new ConflictException(
+          `Item with id ${orderItem.id} does not have enough stock`,
+        );
+      }
     }
 
     const newOrder = await this.repository.createOrder(orderInput);
     await this.warehouseService.createPreparationForOrder(newOrder);
+    for (const orderItem of orderInput.items) {
+      await this.itemService.updateItemQuantity(
+        orderItem.id,
+        -orderItem.quantity,
+      );
+    }
     return newOrder;
   }
 
