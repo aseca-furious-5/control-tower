@@ -36,5 +36,15 @@ services:
       - ./src:/app/src
       - ./prisma:/app/prisma
 
+  integration-test-db:
+    image: postgres:13
+    container_name: integration-tests-prisma
+    ports:
+      - '5433:5432'
+    environment:
+      POSTGRES_USER: prisma
+      POSTGRES_PASSWORD: prisma
+      POSTGRES_DB: tests
+
 volumes:
   tower-db-data:

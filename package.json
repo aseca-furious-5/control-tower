@@ -17,8 +17,11 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json",
-    "db:migrate": "npx prisma migrate dev"
+    "test:e2e": "npx dotenv -e .env.test -- npm run integration:docker:up && npm run db:migrate:integration && DOTENV_CONFIG_PATH=./.env.test jest --config ./test/jest-e2e.json; npm run integration:docker:down",
+    "integration:docker:up": "docker compose up -d integration-test-db",
+    "integration:docker:down": "docker compose down integration-test-db",
+    "db:migrate": "npx prisma migrate dev",
+    "db:migrate:integration": "npx dotenv -e .env.test -- npm run db:migrate"
   },
   "dependencies": {
     "@golevelup/ts-jest": "^0.5.0",
@@ -45,6 +48,7 @@
     "@types/supertest": "^6.0.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
+    "dotenv-cli": "^7.4.2",
     "eslint": "^8.42.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
